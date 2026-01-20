@@ -1,6 +1,6 @@
 # Architecture Documentation
 
-This document provides detailed technical documentation of the Collaborative Canvas application architecture, data flow, and design decisions.
+This document provides detailed technical documentation of the White Board application architecture, data flow, and design decisions.
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@ This document provides detailed technical documentation of the Collaborative Can
 
 ## System Overview
 
-The Collaborative Canvas is a real-time, multi-user drawing application built on a client-server architecture using WebSocket communication for real-time synchronization.
+The White Board is a real-time, multi-user drawing application built on a client-server architecture using WebSocket communication for real-time synchronization.
 
 ### High-Level Architecture
 

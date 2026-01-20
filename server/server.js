@@ -1,5 +1,5 @@
 /**
- * Collaborative Canvas Server
+ * White Board Server
  * Express + Socket.io server for real-time collaborative drawing
  */
 
@@ -306,7 +306,7 @@ io.on('connection', (socket) => {
 server.listen(PORT, () => {
   console.log(`
 ╔════════════════════════════════════════════╗
-║   Collaborative Canvas Server Started      ║
+║   White Board Server Started               ║
 ╠════════════════════════════════════════════╣
 ║   Port: ${PORT.toString().padEnd(36)}║
 ║   URL:  http://localhost:${PORT.toString().padEnd(24)}║
