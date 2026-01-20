@@ -371,11 +371,11 @@ class CanvasManager {
     // Clear canvas
     this.clear();
 
-    // Store operations
-    this.operations = operations;
+    // Store a copy of operations to avoid reference issues
+    this.operations = [...operations];
 
-    // Redraw all operations
-    for (const operation of operations) {
+    // Redraw all operations in order
+    for (const operation of this.operations) {
       if (operation.type === 'stroke' && operation.data) {
         this.drawStroke(operation.data);
       }

@@ -126,15 +126,29 @@ class CollaborativeCanvas {
 
     // Drawing update (operation added)
     this.wsManager.on('drawingUpdate', (data) => {
+      if (this.canvasManager && data.operation) {
+        // Add the new operation to the operations array if not already present
+        const exists = this.canvasManager.operations.some(op => op.id === data.operation.id);
+        if (!exists) {
+          this.canvasManager.operations.push(data.operation);
+        }
+      }
       this.updateUndoRedoButtons(data.canUndo, data.canRedo);
     });
 
     // Undo/Redo events
     this.wsManager.on('operationUndone', (data) => {
       if (this.canvasManager) {
-        // Remove the last operation and redraw
-        this.canvasManager.operations.pop();
-        this.canvasManager.redrawFromOperations(this.canvasManager.operations);
+        // Find and remove the operation with the matching ID
+        const operationIndex = this.canvasManager.operations.findIndex(op => op.id === data.operationId);
+        if (operationIndex !== -1) {
+          this.canvasManager.operations.splice(operationIndex, 1);
+          this.canvasManager.redrawFromOperations(this.canvasManager.operations);
+        } else {
+          // Fallback: remove last operation if ID not found
+          this.canvasManager.operations.pop();
+          this.canvasManager.redrawFromOperations(this.canvasManager.operations);
+        }
         this.updateUndoRedoButtons(data.canUndo, data.canRedo);
         this.addActivity('Operation undone', 'undo');
       }
@@ -142,9 +156,20 @@ class CollaborativeCanvas {
 
     this.wsManager.on('operationRedone', (data) => {
       if (this.canvasManager) {
-        // Add the operation back and redraw
-        this.canvasManager.operations.push(data.operation);
-        this.canvasManager.redrawFromOperations(this.canvasManager.operations);
+        // Add the operation back at the correct position
+        // Operations should be in chronological order by ID
+        if (data.operation) {
+          // Find the correct position to insert based on operation ID
+          let insertIndex = this.canvasManager.operations.length;
+          for (let i = 0; i < this.canvasManager.operations.length; i++) {
+            if (this.canvasManager.operations[i].id > data.operation.id) {
+              insertIndex = i;
+              break;
+            }
+          }
+          this.canvasManager.operations.splice(insertIndex, 0, data.operation);
+          this.canvasManager.redrawFromOperations(this.canvasManager.operations);
+        }
         this.updateUndoRedoButtons(data.canUndo, data.canRedo);
         this.addActivity('Operation redone', 'redo');
       }
